@@ -59,7 +59,8 @@ async function fetchPopulationData(year) {
         if (filteredData.length == 0) {
             for (let i = -1; i <= 1; i += 2) {
                 let j = 1;
-                while (true) {
+                //only look if there's something 20 years in the past/future
+                while (j<= 20) {
                     let data = filterDataSet(dataSet, year + i * j);
                     if (!data.length) {
                         j++;
