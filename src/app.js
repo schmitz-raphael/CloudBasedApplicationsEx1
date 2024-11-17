@@ -7,9 +7,11 @@ const fs = require('fs');
 const app = express();
 const PORT = 8000;
 
+
 // Define the base URL of the Statec API (replace this with the actual API URL)
 const STATEC_API_URL = 'https://lustat.statec.lu/rest/data/LU1,DF_B1100,1.0/.A?dimensionAtObservation=AllDimensions';
 
+//didn't include the population density, as it was not demanded in the exercice sheet, but it can be added at any time by just uncommenting the line
 const DATA_CODES = {
     C01: "TOTAL_POPULATION",
     //C02: "POPULATION_DENSITY",
@@ -105,8 +107,9 @@ app.get("/:year", async (req, res) => {
 
             if (type && DATA_CODES[type]) {
                 output.push({
-                    [DATA_CODES[type]]: count,
-                    timePeriod:timePeriod
+                    type: DATA_CODES[type],
+                    timePeriod:timePeriod,
+                    count: count,
                 });
             }
         };
