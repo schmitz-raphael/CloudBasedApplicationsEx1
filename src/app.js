@@ -23,6 +23,9 @@ const DATA_CODES = {
     C08: "FOREIGN_FEMALE"
 };
 
+//define a constant that's used as threshold when no data is found for a year
+const SEARCH_THRESHOLD = 20
+
 // Function to filter dataset based on the year
 function filterDataSet(dataSet, year) {
     return dataSet.filter(obs => {
@@ -62,7 +65,7 @@ async function fetchPopulationData(year) {
             for (let i = -1; i <= 1; i += 2) {
                 let j = 1;
                 //only look if there's something 20 years in the past/future
-                while (j<= 20) {
+                while (j<= SEARCH_THRESHOLD) {
                     let data = filterDataSet(dataSet, year + i * j);
                     if (!data.length) {
                         j++;
@@ -89,12 +92,11 @@ app.get("/:year", async (req, res) => {
     const year = parseInt(req.params.year);
 
     if (!year) {
-        return res.status(404).json({ error: "Year is required" });
+        return res.status(400).json({ error: "Year is required" });
     }
 
     const data = await fetchPopulationData(year);
     if (data.length === 0) {
-        console.log('No data found for the given year.');
         return res.status(404).json({ error: `No data found for year ${year}` });
     }
     const output = [];
