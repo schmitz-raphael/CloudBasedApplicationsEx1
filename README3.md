@@ -2,28 +2,34 @@
 
 ## Start Minikube Cluster
 
-1. Start Minikube with multiple nodes (1 control plane + 2 workers):
+1. Start Minikube:
 
 ```
-minikube start --nodes=3
+minikube start
 ```
 
-2. Verify the cluster:
+2. Inspect the docker-env for minikube:
 
 ```
-kubectl get nodes
+minikube docker-env
+```
+
+3. Copy the command to point the shell to Minikube's docker daemon (depends on your OS)
+For windows:
+```
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
 ```
 
 ## Build the Docker Image in Minikube
 
 
-Build the Docker image for the REST API:
+Build the Docker image for the Minikube docker daemon:
 
 ```
-docker build -t statec-rest-api
+docker build -t statec-rest-api .
 ```
 
-Verify the image:
+Verify the image was built:
 
 ```
 docker images
@@ -31,51 +37,29 @@ docker images
 
 ## Apply the Deployment and Service
 
-Deploy the application using kubectl:
+Deploy the application as well as the service using kubectl:
 
 ```
 kubectl apply -f deployment.yaml
 ```
-
-Verify the deployment:
-
 ```
-kubectl get deployments
-kubectl get pods
-```
-Verify the service:
-
-```
-kubectl get svc
+kubectl apply -f service.yaml
 ```
 
-## Access the Application
+## Verify the service is running
+```
+kubectl get nodes
+```
 
-Get the NodePort:
+## Create a tunnel to access the node
 
 ```
-kubectl get svc statec-rest-api-service
+minikube tunnel
 ```
-Note the NodePort under the PORT(S) column, e.g., 8000:31234/TCP.
 
-Find Minikube's IP:
+## Access the website
 
-```
-minikube ip
-```
-Access the API: Use http://<minikube-ip>:<NodePort>/<YEAR> in your browser or with tools like curl.
+The service is now available on ```127.0.0.1:8000/<Year>```
 
-Example:
 
-curl http://192.168.49.2:31234/2020
-
-6. Scale the Deployment (Optional)
-
-Increase or decrease the number of replicas:
-
-kubectl scale deployment statec-rest-api-deployment --replicas=3
-
-Verify the updated pods:
-
-kubectl get pods
-
+Full video with a setup can be found here: https://youtu.be/FhHEFM8wDNw

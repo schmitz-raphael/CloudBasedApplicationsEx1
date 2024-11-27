@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: statec-rest-api
-        image: statec-rest-api:latest
+        image: statec-rest-api
+        imagePullPolicy: Never
         ports:
         - containerPort: 8000
 ---
